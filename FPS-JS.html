@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+</body>
+
+
+<script>
+
+var canvas = document.getElementById("canvas");
+var context = canvas.getContext('2d');
+
+var player = {x: 50, y: 50, w: 10, h: 10,angle: 20};
+
+var wall = {x_1: 40, x_2: 50, y_1: 50, y_2: 50, angle: 0, l: 40};
+
+var transform = {tx1: 0, tx2: 0, ty1: 0, ty2: 0, tz1: 0, tz2: 0};
+
+function drawThis()
+{
+
+	context.clearRect(0,0,400,400);
+
+
+	//Top side view
+	context.beginPath();
+
+
+	//transform
+	transform.tx1 = wall.x_1 - player.x;
+	transform.tx2 = wall.x_2 - player.x;
+	transform.ty1 = wall.y_1 - player.y;
+	transform.ty2 = wall.y_2 - player.y;
+
+	transform.tz1 = transform.tx1 * Math.cos(player.angle) + transform.ty1 * Math.sin(player.angle);
+	transform.tz2 = transform.tx2 * Math.cos(player.angle) + transform.ty2 * Math.sin(player.angle);
+	transform.tx1 = transform.tx1 * Math.sin(player.angle) - transform.ty1 * Math.cos(player.angle);
+	transform.tz2 = transform.tx2 * Math.sin(player.angle) - transform.ty2 * Math.cos(player.angle);
+
+
+
+	context.rect(0,0,100,100);
+	context.moveTo(player.x, player.y);
+	context.lineTo(Math.cos(player.angle) + player.x , Math.sin(player.angle) + player.y);
+	context.stroke();
+
+	context.moveTo(wall.x_1, wall.y_1);
+	context.lineTo(wall.x_2, wall.y_2);
+
+	context.stroke();
+	
+	context.closePath();
+
+
+
+}
+
+document.onkeypress = function(e)
+{
+	switch(e.which)
+	{
+		case 100:
+		player.angle += 0.4;
+		console.log("Moved");
+		break;
+		case 97:
+		player.angle -= 0.4;
+		break;
+		case 119:
+		player.y -= Math.sin(player.angle);
+		player.x -= Math.cos(player.angle);
+		break;
+		case 115:
+		player.y += Math.sin(player.angle);
+		player.x += Math.cos(player.angle);
+		break;
+	}
+
+}
+
+//tick
+setInterval(drawThis, 1/60);
+
+</script>
+
+</html>
